@@ -9,11 +9,11 @@ const app = express();
 const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
+  preflightContinue: false,
   optionsSuccessStatus: 204,
 };
 
-app.use(cors(origin(corsOptions)));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(tracker);
