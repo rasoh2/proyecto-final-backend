@@ -1,84 +1,153 @@
 //usuarios.dao.js
-import db from '../database/db.js'
-import {encrypt, compare } from '../../../utils/bcrypt.js'
+import db from "../database/db.js";
+import { encrypt, compare } from "../../../utils/bcrypt.js";
 
 // Login OK
 // En tu módulo SQL
-// En tu módulo SQL
 export const login = async (email, password) => {
-    const [user] = await db('SELECT * FROM usuarios WHERE email = $1;', [email]);
-    if (!user) {
-        // No se encontró ningún usuario con el correo electrónico proporcionado
-        return null;
-    }
+  const [user] = await db("SELECT * FROM usuarios WHERE email = $1;", [email]);
+  if (!user) {
+    // No se encontró ningún usuario con el correo electrónico proporcionado
+    return null;
+  }
 
-    return compare(password, user.password) ? [user] : null;
+  return compare(password, user.password) ? [user] : null;
 };
 
-export const findUserByEmail = async (email = ' ') =>
-await db('SELECT * FROM usuarios WHERE email = $1;', [email])
+export const findUserByEmail = async (email = " ") =>
+  await db("SELECT * FROM usuarios WHERE email = $1;", [email]);
 
 // Registrar usuario OK
-export const register = async ({nombre, fechanacimiento, email, direccion, password, rol}) => {
-    const query = 'INSERT INTO usuarios (usuario_id, nombre, fechanacimiento, email, direccion, password, rol) VALUES (DEFAULT, $1,$2,$3,$4,$5,$6) RETURNING *;'
-    return await db(query, [nombre, fechanacimiento, email, direccion, encrypt(password), rol])
-}
+export const register = async ({
+  nombre,
+  fechanacimiento,
+  email,
+  direccion,
+  password,
+  rol,
+}) => {
+  const query =
+    "INSERT INTO usuarios (usuario_id, nombre, fechanacimiento, email, direccion, password, rol) VALUES (DEFAULT, $1,$2,$3,$4,$5,$6) RETURNING *;";
+  return await db(query, [
+    nombre,
+    fechanacimiento,
+    email,
+    direccion,
+    encrypt(password),
+    rol,
+  ]);
+};
 
 // Registrar un nuevo producto (ok)
-export const nuevoProducto = async ({p_name, p_descripcion, p_precio, p_descuento,p_stock, p_category,p_feelings,p_negatives,p_helpwith,p_rating,p_img}) => {
-    const query = 'INSERT INTO productos (producto_id, p_name, p_descripcion, p_precio,p_descuento, p_stock, p_category,p_feelings,p_negatives,p_helpwith,p_rating,p_img) VALUES (DEFAULT, $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;'
-    return await db(query, [p_name, p_descripcion, p_precio, p_descuento, p_stock, p_category,p_feelings,p_negatives,p_helpwith,p_rating,p_img])
-}
+export const nuevoProducto = async ({
+  p_name,
+  p_descripcion,
+  p_precio,
+  p_descuento,
+  p_stock,
+  p_category,
+  p_feelings,
+  p_negatives,
+  p_helpwith,
+  p_rating,
+  p_img,
+}) => {
+  const query =
+    "INSERT INTO productos (producto_id, p_name, p_descripcion, p_precio,p_descuento, p_stock, p_category,p_feelings,p_negatives,p_helpwith,p_rating,p_img) VALUES (DEFAULT, $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *;";
+  return await db(query, [
+    p_name,
+    p_descripcion,
+    p_precio,
+    p_descuento,
+    p_stock,
+    p_category,
+    p_feelings,
+    p_negatives,
+    p_helpwith,
+    p_rating,
+    p_img,
+  ]);
+};
 
 // Obtener datos de todos los productos OK
 export const ObtenerProductos = async () => {
-    const query = 'SELECT * FROM productos;';
-    return await db(query,[]);
+  const query = "SELECT * FROM productos;";
+  return await db(query, []);
 };
 
 // Obtener dato de un producto OK
 export const ObtenerProductoId = async (producto_id) => {
-    const query = 'SELECT * FROM productos WHERE producto_id = $1';
-    return await db(query,[producto_id]);
+  const query = "SELECT * FROM productos WHERE producto_id = $1";
+  return await db(query, [producto_id]);
 };
 
 // Eliminar Producto OK
 export const eliminarProducto = async (producto_id) => {
-    const query = 'DELETE FROM productos WHERE producto_id = $1;';
-    await db(query, [producto_id]);
+  const query = "DELETE FROM productos WHERE producto_id = $1;";
+  await db(query, [producto_id]);
 };
 
 // Editar o actualizar un producto OK
-export const actualizarProducto = async ({ id, p_name, p_descripcion, p_precio, p_descuento, p_stock, p_category, p_feelings, p_negatives, p_helpwith, p_rating, p_img }) => {
-    const query = `UPDATE productos SET p_name = $2, p_descripcion = $3, p_precio = $4, p_descuento = $5, p_stock = $6, p_category = $7, p_feelings = $8, p_negatives = $9, p_helpwith = $10, p_rating = $11, p_img = $12 WHERE producto_id = $1 RETURNING *; `;
-    try {
-        const result = await db(query, [id, p_name, p_descripcion, p_precio, p_descuento, p_stock, p_category, p_feelings, p_negatives, p_helpwith, p_rating, p_img]);
-        console.log('Resultado de la base de datos:', result);
-        return result;
-    } catch (error) {
-        console.error('Error en la consulta SQL:', error);
-        throw error;
-    }
+export const actualizarProducto = async ({
+  id,
+  p_name,
+  p_descripcion,
+  p_precio,
+  p_descuento,
+  p_stock,
+  p_category,
+  p_feelings,
+  p_negatives,
+  p_helpwith,
+  p_rating,
+  p_img,
+}) => {
+  const query = `UPDATE productos SET p_name = $2, p_descripcion = $3, p_precio = $4, p_descuento = $5, p_stock = $6, p_category = $7, p_feelings = $8, p_negatives = $9, p_helpwith = $10, p_rating = $11, p_img = $12 WHERE producto_id = $1 RETURNING *; `;
+  try {
+    const result = await db(query, [
+      id,
+      p_name,
+      p_descripcion,
+      p_precio,
+      p_descuento,
+      p_stock,
+      p_category,
+      p_feelings,
+      p_negatives,
+      p_helpwith,
+      p_rating,
+      p_img,
+    ]);
+    console.log("Resultado de la base de datos:", result);
+    return result;
+  } catch (error) {
+    console.error("Error en la consulta SQL:", error);
+    throw error;
+  }
 };
 
 //---------------------------- VENTA - CARRITO -------------------------------------------------
 
 // operaciones carrito
-export const agregarProductoAlCarrito = async (usuario_id, producto_id, cantidad) => {
-    const query = 'INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *;';
-    return await db(query, [usuario_id, producto_id, cantidad]);
-  };
-  
-  export const obtenerProductosEnCarrito = async (usuario_id) => {
-    const query = 'SELECT * FROM carrito WHERE usuario_id = $1;';
-    return await db(query, [usuario_id]);
-  };
-  
-  export const eliminarProductoDelCarrito = async (carrito_id) => {
-    const query = 'DELETE FROM carrito WHERE carrito_id = $1;';
-    return await db(query, [carrito_id]);
-  };
-  
+export const agregarProductoAlCarrito = async (
+  usuario_id,
+  producto_id,
+  cantidad
+) => {
+  const query =
+    "INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *;";
+  return await db(query, [usuario_id, producto_id, cantidad]);
+};
+
+export const obtenerProductosEnCarrito = async (usuario_id) => {
+  const query = "SELECT * FROM carrito WHERE usuario_id = $1;";
+  return await db(query, [usuario_id]);
+};
+
+export const eliminarProductoDelCarrito = async (carrito_id) => {
+  const query = "DELETE FROM carrito WHERE carrito_id = $1;";
+  return await db(query, [carrito_id]);
+};
 
 // operaciones venta
 
@@ -112,32 +181,32 @@ export const agregarProductoAlCarrito = async (usuario_id, producto_id, cantidad
 // ultimos cambios
 // venta simple
 export const insertarVenta = async (usuario_id, producto_id, cantidad) => {
-    const query = `INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *;`;
-    const values = [usuario_id, producto_id, cantidad];
-  
-    try {
-      // Realizar la inserción en la tabla de carrito
-      const carritoResult = await db(query, values);
-  
-      // Disminuir el inventario de los productos vendidos
-      const updateQuery = `
+  const query = `INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *;`;
+  const values = [usuario_id, producto_id, cantidad];
+
+  try {
+    // Realizar la inserción en la tabla de carrito
+    const carritoResult = await db(query, values);
+
+    // Disminuir el inventario de los productos vendidos
+    const updateQuery = `
         UPDATE productos 
         SET p_stock = p_stock - $1
         WHERE producto_id = $2;
       `;
-  
-      // Obtener la cantidad del carrito
-      const carritoQuery = 'SELECT cantidad FROM carrito WHERE carrito_id = $1;';
-      const carritoValues = [carritoResult[0].carrito_id];
-      const carrito = await db(carritoQuery, carritoValues);
-  
-      // Ejecutar el query de actualización del inventario
-      const updateValues = [carrito[0].cantidad, producto_id];
-      await db(updateQuery, updateValues);
-  
-      return carritoResult;
-    } catch (error) {
-      console.error('Error al realizar la venta:', error);
-      throw error;
-    }
-  };
+
+    // Obtener la cantidad del carrito
+    const carritoQuery = "SELECT cantidad FROM carrito WHERE carrito_id = $1;";
+    const carritoValues = [carritoResult[0].carrito_id];
+    const carrito = await db(carritoQuery, carritoValues);
+
+    // Ejecutar el query de actualización del inventario
+    const updateValues = [carrito[0].cantidad, producto_id];
+    await db(updateQuery, updateValues);
+
+    return carritoResult;
+  } catch (error) {
+    console.error("Error al realizar la venta:", error);
+    throw error;
+  }
+};
